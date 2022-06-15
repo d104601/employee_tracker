@@ -2,6 +2,8 @@ const inquirer = require("inquirer");
 const mysql = require("mysql2");
 const consoleTable = require("console.table");
 
+let query = "";
+
 const db = mysql.createConnection(
     {
         host: "localhost",
@@ -13,28 +15,53 @@ const db = mysql.createConnection(
 );
 
 function allEmployee() {
-    db.query("SELECT * FROM employee", (err, result) => {
+    query = `
+    SELECT
+        employee.id,
+        employee.first_name,
+        employee.last_name,
+        title,
+        department.name AS department,
+        m.first_name + ' ' + m.last_name AS manager 
+    FROM employee 
+    JOIN role ON employee.role_id = role.id 
+    JOIN department ON role.department_id = department.id 
+    JOIN employee AS m ON employee.manager_id = m.id`;
+    db.query(query, function(err, result) {
         if (err) {
             throw err;
         }
-        consoleTable.getTable(result);
+        console.table(result);
         main();
     });
 }
 
 function addEmployee() {
-    db.query("")
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "first",
+            message: "First name: "
+        },
+        {
+            type: "input",
+            name: "last",
+            message: "Last name: "
+        },
+
+    ])
     main();
 }
 
 function allRoles() {
-    db.query("SELECT * FROM role", (err, result) => {
+    query = "SELECT role.id, title, department.name, salary FROM role JOIN department ON role.department_id = department.id";
+    db.query(query, function(err, result) {
         if (err) {
             throw err;
         }
-        consoleTable.getTable(result);
+        console.table("Role Information", result);
+        main();
     });
-    main();
 }
 
 function addRole() {
@@ -43,13 +70,14 @@ function addRole() {
 }
 
 function allDept() {
-    db.query("SELECT * FROM department", (err, result) => {
+    query = "SELECT * FROM department";
+    db.query(query, function(err, result) {
         if (err) {
             throw err;
         }
-        consoleTable.getTable(result);
+        console.table("Department Information", result);
+        main();
     });
-    main();
 }
 
 function addDept() {
@@ -110,6 +138,7 @@ function main() {
 }
 
 function init() {
+    db.connect();
     console.log("Welcome to Employee Manager.")
     main();
 }
