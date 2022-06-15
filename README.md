@@ -26,7 +26,7 @@ source db/seeds.sql
 ```
 Type following in command line in the same directory to run the application:
 ```
-node index.js
+node index.js (your mysql username) (your mysql password)
 ```
 
 ## App Demonstration

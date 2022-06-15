@@ -15,8 +15,8 @@ let employeeIdArray;
 const db = mysql.createConnection(
     {
         host: "localhost",
-        user: process.env.USER,
-        password: process.env.PASSWORD,
+        user: process.argv[2],
+        password: process.argv[3],
         database: "company_db"
     },
     console.log("Connected company_db")
