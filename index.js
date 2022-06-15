@@ -63,13 +63,13 @@ function addEmployee() {
     ]).then((answers) =>{
         query = `
             INSERT INTO employee (first_name, last_name, role_id, manager_id)
-            VALUES (${answers.first}, ${answers.last}, ${answers.role}, ${answers.manager})`;
+            VALUES ("${answers.first}", "${answers.last}", ${answers.role}, ${answers.manager})`;
         db.query(query, function(err, result) {
             if (err) {
-                throw err;
+                console.log("\nDepartment or manager doesn't exists. Back to main menu.\n");
             }
             else {
-                console.log("New employee added successfully.");
+                console.log("\nNew employee added successfully.\n");
             }
             main();
         });
@@ -104,8 +104,27 @@ function allDept() {
 }
 
 function addDept() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "name",
+            message: "Department's name: "
+        },
 
-    main();
+    ]).then((answers) =>{
+        query = `
+            INSERT INTO department (name)
+            VALUES ("${answers.name}")`;
+        db.query(query, function(err, result) {
+            if (err) {
+                console.log("\nError occurred Back to main menu.\n");
+            }
+            else {
+                console.log("\nNew department added successfully.\n");
+            }
+            main();
+        });
+    });
 }
 
 function update() {
