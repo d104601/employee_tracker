@@ -88,8 +88,36 @@ function allRoles() {
 }
 
 function addRole() {
-
-    main();
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "title",
+            message: "Title of the role: "
+        },
+        {
+            type: "input",
+            name: "salary",
+            message: "Salary of the role: "
+        },
+        {
+            type: "input",
+            name: "department",
+            message: "ID of the role's department: "
+        }
+    ]).then((answers) =>{
+        query = `
+            INSERT INTO role (title, salary, department_id)
+            VALUES ("${answers.title}", "${answers.salary}", ${answers.department})`;
+        db.query(query, function(err) {
+            if (err) {
+                console.log("\nDepartment doesn't exists. Back to main menu.\n");
+            }
+            else {
+                console.log("\nNew role added successfully.\n");
+            }
+            main();
+        });
+    });
 }
 
 function allDept() {
@@ -109,15 +137,14 @@ function addDept() {
             type: "input",
             name: "name",
             message: "Department's name: "
-        },
-
+        }
     ]).then((answers) =>{
         query = `
             INSERT INTO department (name)
             VALUES ("${answers.name}")`;
-        db.query(query, function(err, result) {
+        db.query(query, function(err) {
             if (err) {
-                console.log("\nError occurred Back to main menu.\n");
+                console.log("\nError occurred. Back to main menu.\n");
             }
             else {
                 console.log("\nNew department added successfully.\n");
@@ -128,8 +155,32 @@ function addDept() {
 }
 
 function update() {
-
-    main();
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "id",
+            message: "ID of employee to change role: "
+        },
+        {
+            type: "input",
+            name: "role",
+            message: "ID of new role: "
+        }
+    ]).then((answers) =>{
+        query = `
+            UPDATE employee 
+            SET role_id = ${answers.role}
+            WHERE id = ${answers.id}`;
+        db.query(query, function(err) {
+            if (err) {
+                console.log("\nRole doesn't exists. Back to main menu.\n");
+            }
+            else {
+                console.log("\nChanged role of the employee successfully.\n");
+            }
+            main();
+        });
+    });
 }
 
 function main() {
