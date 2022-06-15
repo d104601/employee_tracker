@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const inquirer = require("inquirer");
 const mysql = require("mysql2");
 const consoleTable = require("console.table");
@@ -7,8 +9,8 @@ let query = "";
 const db = mysql.createConnection(
     {
         host: "localhost",
-        user: "root",
-        password: "taeyong1992",
+        user: process.env.USER,
+        password: process.env.PASSWORD,
         database: "company_db"
     },
     console.log("Connected company_db")
@@ -26,7 +28,7 @@ function allEmployee() {
     FROM employee 
     JOIN role ON employee.role_id = role.id 
     JOIN department ON role.department_id = department.id 
-    JOIN employee AS m ON employee.manager_id = m.id`;
+    LEFT JOIN employee AS m ON employee.manager_id = m.id`;
     db.query(query, function(err, result) {
         if (err) {
             throw err;
@@ -41,16 +43,37 @@ function addEmployee() {
         {
             type: "input",
             name: "first",
-            message: "First name: "
+            message: "Employee's first name: "
         },
         {
             type: "input",
             name: "last",
-            message: "Last name: "
+            message: "Employee's last name: "
         },
-
-    ])
-    main();
+        {
+            type: "input",
+            name: "role",
+            message: "ID of employee's role: "
+        },
+        {
+            type: "input",
+            name: "manager",
+            message: "ID of employee's manager(Enter 'Null' if the employee is a manager): "
+        }
+    ]).then((answers) =>{
+        query = `
+            INSERT INTO employee (first_name, last_name, role_id, manager_id)
+            VALUES (${answers.first}, ${answers.last}, ${answers.role}, ${answers.manager})`;
+        db.query(query, function(err, result) {
+            if (err) {
+                throw err;
+            }
+            else {
+                console.log("New employee added successfully.");
+            }
+            main();
+        });
+    });
 }
 
 function allRoles() {
@@ -139,7 +162,7 @@ function main() {
 
 function init() {
     db.connect();
-    console.log("Welcome to Employee Manager.")
+    console.log("Welcome to Employee Manager.");
     main();
 }
 

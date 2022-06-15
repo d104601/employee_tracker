@@ -10,7 +10,20 @@ Download all files in the repository. This application requires "Node.js", "Mysq
 npm install
 ```
 
+
 ## Usage
+Before running the application, populate the database by following command
+```
+mysql -u root -p
+```
+followed by own password. And then, type following command to create database
+```
+source db/schema.sql
+```
+If you want to use sample database for the test, please type following command also.
+```
+source db/seeds.sql
+```
 Type following in command line in the same directory to run the application:
 ```
 node index.js
