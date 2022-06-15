@@ -185,6 +185,8 @@ function addRole() {
             else {
                 console.log("\nNew role added successfully.\n");
             }
+            getArrayFromRole();
+
             main();
         });
     });
@@ -229,9 +231,10 @@ function addDept() {
 function update() {
     inquirer.prompt([
         {
-            type: "input",
-            name: "id",
-            message: "ID of employee to change role: "
+            type: "list",
+            name: "name",
+            message: "Select employee to change role: ",
+            choices: employeeNameArray
         },
         {
             type: "list",
@@ -240,11 +243,12 @@ function update() {
             choices: roleNameArray
         }
     ]).then((answers) =>{
-        var id = roleIdArray[roleNameArray.indexOf(answers.role)];
+        var employeeId = employeeIdArray[employeeNameArray.indexOf(answers.name)];
+        var roleId = roleIdArray[roleNameArray.indexOf(answers.role)];
         query = `
             UPDATE employee 
-            SET role_id = ${id}
-            WHERE id = ${answers.id}`;
+            SET role_id = ${roleId}
+            WHERE id = ${employeeId}`;
         db.query(query, function(err) {
             if (err) {
                 console.log("\nRole doesn't exists. Back to main menu.\n");
