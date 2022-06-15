@@ -29,3 +29,5 @@ Type following in command line in the same directory to run the application:
 node index.js
 ```
 
+## App Demonstration
+![sample](https://github.com/d104601/employee_tracker/blob/main/demo.gif)
